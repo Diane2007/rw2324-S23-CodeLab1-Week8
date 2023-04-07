@@ -10,6 +10,7 @@ public class DropEggScript : MonoBehaviour
     
     //init mouse position
     Vector3 mousePos;
+    Vector3 eggStartPos;
     
     //when clicked on egg button
     public void TakeEgg()
@@ -18,7 +19,7 @@ public class DropEggScript : MonoBehaviour
         if (!egg)
         {
             //instantiate an egg that player can drag
-            egg = Instantiate(oneEgg, mousePos, Quaternion.identity);
+            egg = Instantiate(oneEgg, eggStartPos, Quaternion.identity);
             Debug.Log("Egg button clicked!"); 
             
             //decrease inventory egg num
@@ -27,6 +28,12 @@ public class DropEggScript : MonoBehaviour
         }
     }
 
+    void Start()
+    {
+        //def where the instantiated egg appears
+        eggStartPos = new Vector3(-250, -60, 0);
+    }
+    
     //then when player releases mouse over the pot
     //the instantiated egg disappears
     //and the number of eggs in pot increases
