@@ -9,25 +9,21 @@ public class DropEggScript : MonoBehaviour
     GameObject egg;             //the spawned egg
     
     //init mouse position
-    public Vector3 mousePos;
+    Vector3 mousePos;
     
-    //when clicked on the big egg drawing
-    void OnMouseOver()
+    //when clicked on egg button
+    public void TakeEgg()
     {
-        if (Input.GetMouseButtonDown(0))
+        //if there are no eggs already instantiated
+        if (!egg)
         {
-            //if there are no eggs being instantiated
-            if (!egg)
-            {
-                //instantiate a normal size egg that player can drag
-                egg = Instantiate<GameObject>(oneEgg, mousePos, Quaternion.identity);    //no rotation
-                oneEgg.transform.position = Input.mousePosition;
-                Debug.Log("Clicked on egg!");
-                
-                //decrease inventory egg number and increase pot egg number
-                GameManager.instance.InvEggNum--;
-                GameManager.instance.PotEggNum++;
-            }
+            //instantiate an egg that player can drag
+            egg = Instantiate(oneEgg, mousePos, Quaternion.identity);
+            Debug.Log("Egg button clicked!"); 
+            
+            //decrease inventory egg num
+            GameManager.instance.InvEggNum--;
+            
         }
     }
 
