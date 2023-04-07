@@ -18,6 +18,10 @@ public class DropEggScript : MonoBehaviour
         //if there are no eggs already instantiated
         if (!egg)
         {
+            //get current mouse position
+            mousePos = GetMousePosition();
+            Debug.Log("mouse position: " + mousePos);
+            
             //instantiate an egg that player can drag
             egg = Instantiate(oneEgg, eggStartPos, Quaternion.identity);
             Debug.Log("Egg button clicked!"); 
@@ -40,7 +44,13 @@ public class DropEggScript : MonoBehaviour
 
     void Update()
     {
-        mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        //mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    }
+
+    Vector3 GetMousePosition()
+    {
+        Vector3 mousePos = Input.mousePosition;
+        return Camera.main.ScreenToWorldPoint(mousePos);
     }
 
 }
