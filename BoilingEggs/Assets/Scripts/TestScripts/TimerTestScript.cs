@@ -4,45 +4,72 @@ using System.Collections.Generic;
 using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TimerTestScript : MonoBehaviour
 {
     //init timer and timer text
     float timer = 0f;
     float boilingTime = 0f;
-    public TextMeshProUGUI timerText, boilTimerText;
+    public TextMeshProUGUI timerText, boilTimerText, debugBoilTimer;
     
     public bool isTiming = false;      //has the player's timer started
     public bool isBoiling = false;     //has the egg(s) start boiling
     
     //some time vars that determine if the water is boiling or not
     int waterSimmer, waterBoil;                 //for water boiling
-    int softBoilBottom, softBoilMax, mediumBoilMax, hardBoilMax; //for eggs
+    public int softBoilBottom, softBoilMax, mediumBoilMax, hardBoilMax; //for eggs
     
     //init the var for getting the player's input number
-    int playerInputNum;
+    //public TextMeshProUGUI playerInput;
+    //int playerInputNum = 0;
+    
+    // public void BoilEgg()                       //boil egg
+    // {
+    //     //get and parse the player input number first
+    //     //IT JUST DOESNT WORK
+    //     //int.Parse DOESNT WORK EITHER ITS DRIVING ME MAD
+    //     //int.TryParse(playerInput.text, out int playerInputNum);
+    //     // Debug.Log("Parsing: " + playerInput.text + ".");
+    //     // Debug.Log("Parse and get: " + playerInputNum + ".");
+    //     
+    //     isBoiling = true;       //starts boiling  egg
+    //
+    //     //egg number in inventory decreases
+    //     EggManager.instance.InvEggNum -= 4;
+    //     //egg number in pot increases
+    //     EggManager.instance.PotEggNum += 4;
+    //     
+    //     Debug.Log("isBoiling? " + isBoiling);
+    // }
+    //
+    // public void TakeEgg()                       //take egg out of the pot
+    // {
+    //     EggManager.instance.PotEggNum--;        //egg number in pot decreases
+    //     EggManager.instance.IceEggNum++;        //egg number in ice bath increases
+    //     //Debug.Log("In inventory: " + EggManager.instance.InvEggNum + 
+    //     //          "\n" + "In put: " + EggManager.instance.PotEggNum);
+    //     
+    //     
+    //     
+    //     //if there are no eggs in the pot
+    //     if(EggManager.instance.PotEggNum == 0)
+    //     {
+    //         isBoiling = false;      //stop boiling
+    //         boilingTime = 0f;
+    //     }
+    //     
+    //     Debug.Log("isBoiling? " + isBoiling);
+    // }
 
-    public void BoilEgg()                       //boil egg
+    //just to protect our boiling time
+    public float BoilingTime
     {
-        isBoiling = true;       //starts boiling  
-
-        //egg number in inventory decreases
-        EggManager.instance.InvEggNum --;
-        //egg number in pot increases
-        EggManager.instance.PotEggNum ++;
-        
-        Debug.Log("isBoiling? " + isBoiling);
-    }
-
-    public void TakeEgg()                       //take egg out of the pot
-    {
-        EggManager.instance.PotEggNum--;        //egg number in pot decreases
-        EggManager.instance.IceEggNum++;        //egg number in ice bath increases
-        //Debug.Log("In inventory: " + EggManager.instance.InvEggNum + 
-        //          "\n" + "In put: " + EggManager.instance.PotEggNum);
-
-        isBoiling = false;      //stop boiling
-        Debug.Log("isBoiling? " + isBoiling);
+        get { return boilingTime; }
+        set
+        {
+            boilingTime = value;
+        }
     }
 
 
@@ -75,9 +102,9 @@ public class TimerTestScript : MonoBehaviour
         //count the digit minute and second has
         int minDig = Mathf.FloorToInt(Mathf.Log10(minute)) + 1;
         int secDig = Mathf.FloorToInt(Mathf.Log10(second)) + 1;
-        Debug.Log("Time is: " + minute + ":" + second + "\n" +
-                  "Minute digit is: " + minDig + "\n" +
-                  "Second digit is: " + secDig);
+        // Debug.Log("Time is: " + minute + ":" + second + "\n" +
+        //           "Minute digit is: " + minDig + "\n" +
+        //           "Second digit is: " + secDig);
         //if there is only one digit, add a zero in front of it for the 00:00 digital clock effect
         if (minDig > 1)
         {
@@ -135,18 +162,20 @@ public class TimerTestScript : MonoBehaviour
         timerText.text = "00:00";
     }
 
-    //turning player's input number (string) into integer
-    void ParseInput()
-    {
-        playerInputNum = int.Parse(EggManager.instance.inputNum.text);
-    }
+    //DOESNT WORK ITS DRIVING ME MAD
+    // //turning player's input number (string) into integer
+    //  void ParseInput()
+    //  { 
+    //      //playerInputNum = int.Parse(EggManager.instance.inputNum.text);
+    //      int.TryParse(playerInput.text, out int playerInputNum);
+    //  }
 
     void Start()
     {
         //we start with neither timer has started nor eggs are boiling
         isTiming = false;
         isBoiling = false;
-        
+
         //def the timer vars
         waterSimmer = 10;
         waterBoil = 20;
@@ -171,6 +200,8 @@ public class TimerTestScript : MonoBehaviour
         {
             //boiling time is real time
             boilingTime += Time.deltaTime;
+            debugBoilTimer.text = "" + boilingTime;
+            
             BoilTimer();    //start counting the boiling time
         }
     }

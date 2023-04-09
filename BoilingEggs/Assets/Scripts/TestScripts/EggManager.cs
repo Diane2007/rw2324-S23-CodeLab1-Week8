@@ -11,13 +11,15 @@ public class EggManager : MonoBehaviour
     int invEggNum, potEggNum, iceEggNum;
     
     //init the text
-    public TextMeshProUGUI invEggText, potEggText, iceEggText;
+    public TextMeshProUGUI invEggText, potEggText, iceEggText, displayText;
+    
     //init buttons
     public Button boilEggButton, takeEggButton;
     
-    //connect with script and input field
+    //connect with script
     public TimerTestScript timerScript;
-    public TextMeshProUGUI inputNum;
+
+    //public Text inputNum;
     //int playerInputNum;
     
     //create a dictionary to hold the egg and their state
@@ -37,13 +39,83 @@ public class EggManager : MonoBehaviour
         }
     }
 
+    
+    public void BoilEgg()                       //boil egg
+    {
+        timerScript.isBoiling = true;       //starts boiling  egg
+
+        //egg number in inventory decreases
+        InvEggNum -= 4;
+        //egg number in pot increases
+        PotEggNum += 4;
+        
+        //Debug.Log("isBoiling? " + timerScript.isBoiling);
+    }
+
+    public void TakeEgg()                       //take egg out of the pot
+    {
+        PotEggNum--;        //egg number in pot decreases
+        IceEggNum++;        //egg number in ice bath increases
+        //Debug.Log("In inventory: " + EggManager.instance.InvEggNum + 
+        //          "\n" + "In put: " + EggManager.instance.PotEggNum);
+        
+        //determine the egg's boil state when taking out
+        
+        //UNDERCOOKED: BoilingTime < softBoilBottom time
+        if (timerScript.BoilingTime < timerScript.softBoilBottom)
+        {
+            BoiledEggs("UNDERCOOKED", 1);
+        }
+        //SOFT-BOILED: softBoilBottom < BoilingTime < softBoilMax
+        if (timerScript.BoilingTime > timerScript.softBoilBottom && timerScript.BoilingTime < timerScript.softBoilMax)
+        {
+            BoiledEggs("SOFT-BOILED", 1);
+        }
+        //MEDIUM: softBoilMax < BoilingTime < mediumBoilMax
+        if (timerScript.BoilingTime > timerScript.softBoilMax && timerScript.BoilingTime < timerScript.mediumBoilMax)
+        {
+            BoiledEggs("MEDIUM", 1);
+        }
+        //HARD: mediumBoilMax < BoilingTime < hardBoilMax
+        if (timerScript.BoilingTime > timerScript.mediumBoilMax && timerScript.BoilingTime < timerScript.hardBoilMax)
+        {
+            BoiledEggs("HARD-BOILED", 1);
+        }
+        //OVERCOOKED: BoilingTime > hardBoilMax
+        if (timerScript.BoilingTime > timerScript.hardBoilMax)
+        {
+            BoiledEggs("OVERCOOKED", 1);
+        }
+        
+        //if there are no eggs in the pot
+        if(PotEggNum == 0)
+        {
+            timerScript.isBoiling = false;      //stop boiling
+            Debug.Log("BoilingTime: " + timerScript.BoilingTime);
+            timerScript.BoilingTime = 0f;
+        }
+        
+        //Debug.Log("isBoiling? " + timerScript.isBoiling);
+
+        //somehow this doesn't display as intended?
+        //display eggType and value
+        // foreach (KeyValuePair<string, int> boiledEgg in eggsBoiled)
+        // {
+        //     Debug.Log("You have: " + boiledEgg.Value + " " + boiledEgg.Key);
+        //     
+        //     //display string as its key code
+        //     displayText.text += "\n" + boiledEgg.Key + " (" + eggsBoiled[boiledEgg.Key]  + ")";
+        // }
+        
+    }
+    
     public int InvEggNum
     {
         get { return invEggNum; }
         set
         {
             invEggNum = value;
-            invEggText.text = "Eggs in inventory: " + invEggNum;
+            invEggText.text = "You have: " + invEggNum + " eggs";
 
             if (invEggNum <= 0 || timerScript.isBoiling)    //if there is no egg in inventory or is boiling
             {
@@ -62,7 +134,7 @@ public class EggManager : MonoBehaviour
         set
         {
             potEggNum = value;
-            potEggText.text = "Eggs in pot: " + potEggNum;
+            potEggText.text = "Boiling: " + potEggNum + " eggs";
 
             if (potEggNum <= 0)                             //if there is no egg in pot
             {
@@ -72,15 +144,8 @@ public class EggManager : MonoBehaviour
             {
                 takeEggButton.interactable = true;
             }
-
         }
     }
-
-    // void ParseInput()
-    // {
-    //     //parse the player input number, which is a string, into integer
-    //     playerInputNum = int.Parse(inputNum.text);
-    // }
 
     public int IceEggNum
     {
@@ -88,7 +153,7 @@ public class EggManager : MonoBehaviour
         set
         {
             iceEggNum = value;
-            iceEggText.text = "Eggs in ice: " + iceEggNum;
+            iceEggText.text = "In ice bath: " + iceEggNum + " eggs";
         }
     }
 
@@ -100,10 +165,13 @@ public class EggManager : MonoBehaviour
         invEggText.text = "You have: " + InvEggNum + " eggs";
         potEggText.text = "Boiling: " + PotEggNum + " eggs";
         iceEggText.text = "In ice bath: " + IceEggNum + " eggs";
+        
+        //give TimerTestScript's BoilingTime a variable to hold
+        
     }
 
     //determines the egg's finished state
-    public void BoiledEggs(string eggType, int amountToAdd)
+    void BoiledEggs(string eggType, int amountToAdd)
     {
         //if we already have that type of egg
         if (eggsBoiled.ContainsKey(eggType))
@@ -117,7 +185,4 @@ public class EggManager : MonoBehaviour
         }
     }
     
-    
-
-
 }
