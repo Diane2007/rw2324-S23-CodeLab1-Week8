@@ -24,13 +24,14 @@ public class TimerTestScript : MonoBehaviour
 
     public void BoilEgg()                       //boil egg
     {
-        isBoiling = true;       //starts boiling
-        EggManager.instance.InvEggNum--;        //egg number in inventory decreases
-        EggManager.instance.PotEggNum++;        //egg number in pot increases
+        isBoiling = true;       //starts boiling  
+
+        //egg number in inventory decreases
+        EggManager.instance.InvEggNum --;
+        //egg number in pot increases
+        EggManager.instance.PotEggNum ++;
         
         Debug.Log("isBoiling? " + isBoiling);
-        //Debug.Log("In inventory: " + EggManager.instance.InvEggNum + 
-        //          "\n" + "In put: " + EggManager.instance.PotEggNum);
     }
 
     public void TakeEgg()                       //take egg out of the pot
@@ -137,7 +138,7 @@ public class TimerTestScript : MonoBehaviour
     //turning player's input number (string) into integer
     void ParseInput()
     {
-        
+        playerInputNum = int.Parse(EggManager.instance.inputNum.text);
     }
 
     void Start()
