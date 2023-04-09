@@ -11,7 +11,8 @@ public class EggManager : MonoBehaviour
     int invEggNum, potEggNum, iceEggNum;
     
     //init the text
-    public TextMeshProUGUI invEggText, potEggText, iceEggText, displayText;
+    public TextMeshProUGUI invEggText, potEggText, iceEggText;
+    public TextMeshProUGUI displayText, underText, softText, mediumText, hardText, overText;
     
     //init buttons
     public Button boilEggButton, takeEggButton;
@@ -45,9 +46,9 @@ public class EggManager : MonoBehaviour
         timerScript.isBoiling = true;       //starts boiling  egg
 
         //egg number in inventory decreases
-        InvEggNum -= 4;
+        InvEggNum -= 6;
         //egg number in pot increases
-        PotEggNum += 4;
+        PotEggNum += 6;
         
         //Debug.Log("isBoiling? " + timerScript.isBoiling);
     }
@@ -65,26 +66,31 @@ public class EggManager : MonoBehaviour
         if (timerScript.BoilingTime < timerScript.softBoilBottom)
         {
             BoiledEggs("UNDERCOOKED", 1);
+            underText.text = "Undercooked eggs: " + eggsBoiled["UNDERCOOKED"];
         }
         //SOFT-BOILED: softBoilBottom < BoilingTime < softBoilMax
         if (timerScript.BoilingTime > timerScript.softBoilBottom && timerScript.BoilingTime < timerScript.softBoilMax)
         {
             BoiledEggs("SOFT-BOILED", 1);
+            softText.text = "Soft-boiled eggs: " + eggsBoiled["SOFT-BOILED"];
         }
         //MEDIUM: softBoilMax < BoilingTime < mediumBoilMax
         if (timerScript.BoilingTime > timerScript.softBoilMax && timerScript.BoilingTime < timerScript.mediumBoilMax)
         {
             BoiledEggs("MEDIUM", 1);
+            mediumText.text = "Medium eggs: " + eggsBoiled["MEDIUM"];
         }
         //HARD: mediumBoilMax < BoilingTime < hardBoilMax
         if (timerScript.BoilingTime > timerScript.mediumBoilMax && timerScript.BoilingTime < timerScript.hardBoilMax)
         {
             BoiledEggs("HARD-BOILED", 1);
+            hardText.text = "Hard-boiled eggs: " + eggsBoiled["HARD-BOILED"];
         }
         //OVERCOOKED: BoilingTime > hardBoilMax
         if (timerScript.BoilingTime > timerScript.hardBoilMax)
         {
             BoiledEggs("OVERCOOKED", 1);
+            overText.text = "Overcooked eggs: " + eggsBoiled["OVERCOOKED"];
         }
         
         //if there are no eggs in the pot
@@ -93,6 +99,10 @@ public class EggManager : MonoBehaviour
             timerScript.isBoiling = false;      //stop boiling
             Debug.Log("BoilingTime: " + timerScript.BoilingTime);
             timerScript.BoilingTime = 0f;
+            if (invEggNum > 0)
+            {
+                boilEggButton.interactable = true;
+            }
         }
         
         //Debug.Log("isBoiling? " + timerScript.isBoiling);
@@ -139,6 +149,7 @@ public class EggManager : MonoBehaviour
             if (potEggNum <= 0)                             //if there is no egg in pot
             {
                 takeEggButton.interactable = false;         //cannot take more eggs
+                
             }
             else
             {
